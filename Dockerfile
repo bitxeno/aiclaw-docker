@@ -56,8 +56,7 @@ WORKDIR /home/openclaw/workspace
 
 # Install Node.js (LTS)
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y nodejs
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
@@ -100,6 +99,9 @@ ENV PATH="${PATH}:/usr/local/jj"
 # Install OpenClaw
 RUN npm install -g openclaw@latest
 
+# Clean up apt cache to reduce image size
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Verify installations
 RUN echo "=== Python ===" && python3 --version && \
     echo "=== Node.js ===" && node --version && \
@@ -120,8 +122,7 @@ USER openclaw
 
 # Copy s6-overlay services scripts
 COPY services.d /etc/services.d
-RUN chown -R openclaw:openclaw /etc/services.d && \
-    chmod +x /etc/services.d/*/run
+RUN chmod +x /etc/services.d/*/run
 
 # Set s6-overlay entrypoint
 ENTRYPOINT ["/init"]
