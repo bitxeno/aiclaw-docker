@@ -37,23 +37,6 @@ RUN apt-get install -y \
 # Set Python 3 as default and create alias
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
-# Create openclaw user and workspace
-RUN useradd -m -s /bin/bash openclaw && \
-    mkdir -p /home/openclaw/workspace && \
-    chown -R openclaw:openclaw /home/openclaw && \
-    apt-get install -y sudo && \
-    echo "openclaw ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/openclaw && \
-    chmod 0440 /etc/sudoers.d/openclaw
-
-# Copy opencode config to workspace
-RUN mkdir -p /home/openclaw/.config/opencode && \
-    chown -R openclaw:openclaw /home/openclaw/.config/opencode
-COPY opencode.json /home/openclaw/.config/opencode/
-RUN chown openclaw:openclaw /home/openclaw/.config/opencode/opencode.json
-
-# Set working directory
-WORKDIR /home/openclaw/workspace
-
 # Install Node.js (LTS)
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
@@ -83,11 +66,6 @@ ENV PATH="${PATH}:/usr/local/go/bin"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="${PATH}:/root/.cargo/bin"
 
-# Install OpenCode CLI
-RUN curl -fsSL https://opencode.ai/install | bash && \
-    export PATH="${PATH}:$(find /root -name opencode -type f -executable 2>/dev/null | xargs dirname | head -1)" || true
-ENV PATH="${PATH}:/root/.local/bin:/root/.opencode/bin"
-
 # Install jj
 RUN ARCH=$(uname -m); \
     mkdir -p /usr/local/jj && \
@@ -95,6 +73,9 @@ RUN ARCH=$(uname -m); \
     tar -C /usr/local/jj -xzf jj-v0.39.0-${ARCH}-unknown-linux-musl.tar.gz && \
     rm jj-v0.39.0-${ARCH}-unknown-linux-musl.tar.gz
 ENV PATH="${PATH}:/usr/local/jj"
+
+# Install OpenCode
+RUN OPENCODE_INSTALL_DIR=/usr/local/bin curl -fsSL https://opencode.ai/install | bash
 
 # Install OpenClaw
 RUN npm install -g openclaw@latest
@@ -114,15 +95,22 @@ RUN echo "=== Python ===" && python3 --version && \
     echo "=== OpenCode ===" && opencode --version && \
     echo "=== Rclone ===" && rclone version
 
-# Set proper permissions for workspace
-RUN chown -R openclaw:openclaw /home/openclaw/workspace
 
 # Copy s6-overlay services scripts
 COPY services.d /etc/services.d
 RUN chmod +x /etc/services.d/*/run
 
-# Switch to openclaw user
-USER openclaw
+# Copy opencode config to workspace
+RUN mkdir -p /home/ubuntu/.config/opencode && \
+    chown -R ubuntu:ubuntu /home/ubuntu/.config/opencode
+COPY opencode.json /home/ubuntu/.config/opencode/
+RUN chown ubuntu:ubuntu /home/ubuntu/.config/opencode/opencode.json
+
+# Set working directory
+WORKDIR /home/ubuntu
+
+# Switch to ubuntu user
+USER ubuntu
 
 # Set s6-overlay entrypoint
 ENTRYPOINT ["/init"]

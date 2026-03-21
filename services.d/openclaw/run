@@ -4,7 +4,7 @@ set -e
 
 echo "Starting openclaw..."
 
-local config_file="~/.openclaw/openclaw.json"
+config_file="~/.openclaw/openclaw.json"
 if [ ! -f "$config_file" ]; then
     openclaw config set gateway.mode "${OPENCLAW_GATEWAY_MODE:-local}"
     openclaw config set gateway.controlUi.allowInsecureAuth "${OPENCLAW_GATEWAY_ALLOW_INSECURE_AUTH:-false}"
