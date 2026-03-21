@@ -101,9 +101,9 @@ RUN echo "=== Python ===" && python3 --version && \
 COPY services.d /etc/services.d
 RUN chmod +x /etc/services.d/*/run
 
-# Copy opencode config to workspace
-RUN mkdir -p /root/.config/opencode
-COPY opencode.json /root/.config/opencode/
+# # Copy opencode config to workspace
+# RUN mkdir -p /root/.config/opencode
+# COPY opencode.json /root/.config/opencode/
 
 # Set s6-overlay entrypoint
 ENTRYPOINT ["/init"]

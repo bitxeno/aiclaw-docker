@@ -4,4 +4,20 @@ set -e
 
 echo "Starting opencode..."
 
+# ensure opencode config exists; if missing, write a sensible default
+CONFIG_PATH="$HOME/.config/opencode/opencode.json"
+if [ ! -f "${CONFIG_PATH}" ]; then
+	echo "opencode config not found; writing default to ${CONFIG_PATH}"
+	mkdir -p "$(dirname "${CONFIG_PATH}")"
+	cat > "${CONFIG_PATH}" <<EOF
+{
+  "permission": {
+    "*": {
+      "*": "allow"
+    }
+  }
+}
+EOF
+fi
+
 opencode web --port "${OPENCODE_PORT:-4096}" --hostname "${OPENCODE_HOSTNAME:-0.0.0.0}"
