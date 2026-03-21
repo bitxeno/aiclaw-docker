@@ -42,11 +42,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
 
 # Install Bun
-RUN curl -fsSL https://bun.sh/install | bash
+RUN curl -fsSL https://bun.sh/install | bash && \
+    chmod -R 777 /root/.bun/bin
 ENV PATH="${PATH}:/root/.bun/bin"
 
 # Install uv (Python package manager)
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    chmod -R 777 /root/.local/bin
 ENV PATH="${PATH}:/root/.local/bin"
 
 # Install Go (multi-arch)
@@ -63,7 +65,8 @@ RUN if [ "$(uname -m)" = "aarch64" ]; then \
 ENV PATH="${PATH}:/usr/local/go/bin"
 
 # Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    chmod -R 777 /root/.cargo/bin
 ENV PATH="${PATH}:/root/.cargo/bin"
 
 # Install jj
@@ -75,11 +78,17 @@ RUN ARCH=$(uname -m); \
 ENV PATH="${PATH}:/usr/local/jj"
 
 # Install OpenCode
-RUN curl -fsSL https://opencode.ai/install | bash
+RUN curl -fsSL https://opencode.ai/install | bash && \
+    chmod -R 777 /root/.opencode/bin
 ENV PATH="${PATH}:/root/.opencode/bin"
 
 # Install OpenClaw
 RUN npm install -g openclaw@latest
+
+# ubuntu user setup
+RUN apt-get update && apt-get install -y sudo && \
+    echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/ubuntu && \
+    chmod 0440 /etc/sudoers.d/ubuntu
 
 # Clean up apt cache to reduce image size
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
