@@ -75,7 +75,8 @@ RUN ARCH=$(uname -m); \
 ENV PATH="${PATH}:/usr/local/jj"
 
 # Install OpenCode
-RUN OPENCODE_INSTALL_DIR=/usr/local/bin curl -fsSL https://opencode.ai/install | bash
+RUN curl -fsSL https://opencode.ai/install | bash
+ENV PATH="${PATH}:/root/.opencode/bin"
 
 # Install OpenClaw
 RUN npm install -g openclaw@latest
