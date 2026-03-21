@@ -42,7 +42,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
 
 # Install Bun
-RUN BUN_INSTALL=/usr/local curl -fsSL https://bun.sh/install | bash
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="${PATH}:/root/.bun/bin"
 
 # Install uv (Python package manager)
 RUN XDG_BIN_HOME=/usr/local/bin curl -LsSf https://astral.sh/uv/install.sh | sh
