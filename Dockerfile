@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install base dependencies and tools
 # software-properties-common will lead to lsetxattr security.capability error
 RUN apt-get update && apt-get install -y \
+    vim \
     curl \
     wget \
     git \
@@ -43,18 +44,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 
 # Install Bun (Old CPU need to use baseline version)
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
-      ARCH=x64; \
+      NAME=x64-baseline; \
     else \
-      ARCH=$(uname -m); \
+      NAME=$(uname -m); \
     fi && \
-    wget https://github.com/oven-sh/bun/releases/download/bun-v1.3.11/bun-linux-${ARCH}-baseline.zip && \
-    unzip bun-linux-${ARCH}-baseline.zip && \
-    mv bun-linux-${ARCH}-baseline/bun /usr/local/bin/ && \
-    rm -rf bun-linux-${ARCH}-baseline bun-linux-${ARCH}-baseline.zip
+    wget https://github.com/oven-sh/bun/releases/download/bun-v1.3.11/bun-linux-${NAME}.zip && \
+    unzip bun-linux-${NAME}.zip && \
+    mv bun-linux-${NAME}/bun /usr/local/bin/ && \
+    rm -rf bun-linux-${NAME} bun-linux-${NAME}.zip
 ENV PATH="${PATH}:/root/.bun/bin"
-
-# Install mcp-cli
-RUN bun install -g https://github.com/philschmid/mcp-cli
 
 # Install uv (Python package manager)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -71,7 +69,7 @@ RUN if [ "$(uname -m)" = "aarch64" ]; then \
     wget https://go.dev/dl/go1.26.1.linux-${GOARCH}.tar.gz && \
     rm -rf /usr/local/go && tar -C /usr/local -xzf go1.26.1.linux-${GOARCH}.tar.gz && \
     rm go1.26.1.linux-${GOARCH}.tar.gz
-ENV PATH="${PATH}:/usr/local/go/bin"
+ENV PATH="${PATH}:/usr/local/go/bin:/root/go/bin"
 
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
