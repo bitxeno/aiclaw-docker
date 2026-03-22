@@ -48,9 +48,13 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
       ARCH=$(uname -m); \
     fi && \
     wget https://github.com/oven-sh/bun/releases/download/bun-v1.3.11/bun-linux-${ARCH}-baseline.zip && \
-    unzip bun-linux-${ARCH}-baseline.zip -d /usr/local/ && \
-    rm bun-linux-${ARCH}-baseline.zip
-ENV PATH="${PATH}:/usr/local/bun-linux-${ARCH}-baseline"
+    unzip bun-linux-${ARCH}-baseline.zip && \
+    mv bun-linux-${ARCH}-baseline/bun /usr/local/bin/ && \
+    rm -rf bun-linux-${ARCH}-baseline bun-linux-${ARCH}-baseline.zip
+ENV PATH="${PATH}:/root/.bun/bin"
+
+# Install mcp-cli
+RUN bun install -g https://github.com/philschmid/mcp-cli
 
 # Install uv (Python package manager)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
