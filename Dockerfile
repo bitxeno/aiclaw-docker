@@ -18,8 +18,12 @@ RUN apt-get update && apt-get install -y \
     jq \
     rclone
 
-RUN curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
+# Install Homebrew as non-root user
+USER ubuntu
+RUN NONINTERACTIVE=1 /bin/bash -lc \
+  "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+USER root
 
 # Install GitHub CLI
 RUN brew install gh
