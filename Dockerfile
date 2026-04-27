@@ -19,6 +19,11 @@ RUN apt-get update && apt-get install -y \
     zip \
     jq
 
+# Install homebrew (Linuxbrew)
+RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+RUN echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /root/.profile
+
 # Install s6-overlay for process supervision
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz \
@@ -92,8 +97,8 @@ RUN npm install -g @openai/codex && \
 #     npm install -g bb-browser
 
 # Install moltis
-RUN curl -fsSL https://www.moltis.org/install.sh | sh
-RUN npm install -g bb-browser
+RUN brew install moltis-org/tap/moltis && \
+    npm install -g bb-browser
 
 # Install GitHub CLI
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
