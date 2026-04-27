@@ -98,8 +98,9 @@ RUN ARCH=$(uname -m); \
     mkdir -p /root/.moltis/bin && \
     wget https://github.com/moltis-org/moltis/releases/download/20260426.05/moltis-20260426.05-${ARCH}-unknown-linux-gnu.tar.gz && \
         tar -xzf moltis-20260426.05-${ARCH}-unknown-linux-gnu.tar.gz && \
-        mv moltis-20260426.05-${ARCH}-unknown-linux-gnu/moltis /root/.moltis/bin/ && \
-        mv moltis-20260426.05-${ARCH}-unknown-linux-gnu/share /root/.moltis/ && \
+        chmod +x moltis && \
+        mv moltis /root/.moltis/bin/ && \
+        mv share /root/.moltis/ && \
         npm install -g bb-browser
 ENV PATH="${PATH}:/root/.moltis/bin"
 
