@@ -86,10 +86,14 @@ ENV PATH="${PATH}:/root/.opencode/bin"
 RUN npm install -g @openai/codex && \
     npm install -g codexapp
 
-# Install OpenClaw
-RUN npm install -g openclaw@latest && \
-    npm install -g mcporter && \
-    npm install -g bb-browser
+# # Install OpenClaw
+# RUN npm install -g openclaw@latest && \
+#     npm install -g mcporter && \
+#     npm install -g bb-browser
+
+# Install moltis
+RUN curl -fsSL https://www.moltis.org/install.sh | sh
+RUN npm install -g bb-browser
 
 # Install GitHub CLI
 RUN if [ "$(uname -m)" = "x86_64" ]; then \

@@ -1,0 +1,10 @@
+#!/command/with-contenv bash
+
+set -e
+
+echo "Starting moltis..."
+
+moltis gateway \
+        --bind "${MOLTIS_GATEWAY_BIND:-0.0.0.0}" \
+        --port "${MOLTIS_GATEWAY_PORT:-18789}" \
+        --no-tls
