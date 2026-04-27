@@ -19,11 +19,6 @@ RUN apt-get update && apt-get install -y \
     zip \
     jq
 
-# Install homebrew (Linuxbrew)
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
-RUN echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /root/.profile
-
 # Install s6-overlay for process supervision
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz \
@@ -97,8 +92,16 @@ RUN npm install -g @openai/codex && \
 #     npm install -g bb-browser
 
 # Install moltis
-RUN brew install moltis-org/tap/moltis && \
-    npm install -g bb-browser
+RUN ARCH=$(uname -m); \
+    rm -rf /root/.moltis/share && \
+    rm -rf /root/.moltis/bin && \
+    mkdir -p /root/.moltis/bin && \
+    wget https://github.com/moltis-org/moltis/releases/download/20260426.05/moltis-20260426.05-${ARCH}-unknown-linux-gnu.tar.gz && \
+        tar -xzf moltis-20260426.05-${ARCH}-unknown-linux-gnu.tar.gz && \
+        mv moltis-20260426.05-${ARCH}-unknown-linux-gnu/moltis /root/.moltis/bin/ && \
+        mv moltis-20260426.05-${ARCH}-unknown-linux-gnu/share /root/.moltis/ && \
+        npm install -g bb-browser
+ENV PATH="${PATH}:/root/.moltis/bin"
 
 # Install GitHub CLI
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
