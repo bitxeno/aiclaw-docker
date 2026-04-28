@@ -1,4 +1,4 @@
-# Reference: https://github.com/justlovemaki/openclaw-docker-cn-im
+# Reference: https://github.com/justlovemaki/aiclaw-docker-cn-im
 FROM ubuntu:24.04
 ARG S6_OVERLAY_VERSION=3.2.2.0
 ARG GITHUB_CLI_VERSION=2.88.1
@@ -95,7 +95,6 @@ RUN npm install -g @openai/codex && \
 # Install zeroclaw
 RUN curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/master/install.sh | bash
 RUN npm install -g bb-browser
-ENV PATH="${PATH}:/root/.local/moltis/bin"
 
 # Install GitHub CLI
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
@@ -133,7 +132,9 @@ RUN echo "=== Python ===" && python3 --version && \
 
 
 # Copy s6-overlay services scripts
-COPY services.d /etc/services.d
+COPY services.d/codexapp /etc/services.d/codexapp
+COPY services.d/opencode /etc/services.d/opencode
+COPY services.d/zeroclaw /etc/services.d/zeroclaw
 RUN chmod +x /etc/services.d/*/run
 
 # Copy default configuration files (if any)

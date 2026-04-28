@@ -1,4 +1,4 @@
-# openclaw-docker
+# aiclaw-docker
 
 Minimal Docker image providing a development workspace with common tools.
 
@@ -25,7 +25,7 @@ Quick start
 Build the image locally:
 
 ```bash
-docker build -t openclaw-docker:latest .
+docker build -t aiclaw-docker:latest .
 ```
 
 Run (mount workspace from host):
@@ -33,7 +33,7 @@ Run (mount workspace from host):
 ```bash
 docker run -d --name openclaw \
   -v $(pwd)/workspace:/home/openclaw/workspace \
-  openclaw-docker:latest
+  aiclaw-docker:latest
 ```
 
 Interactive shell (useful for debugging):
@@ -41,13 +41,13 @@ Interactive shell (useful for debugging):
 ```bash
 docker run -it --rm \
   -v $(pwd)/workspace:/home/openclaw/workspace \
-  openclaw-docker:latest bash
+  aiclaw-docker:latest bash
 ```
 
 Check installed versions quickly:
 
 ```bash
-docker run --rm openclaw-docker:latest bash -lc "python --version && node --version && bun --version && go version && rustc --version && opencode --version"
+docker run --rm aiclaw-docker:latest bash -lc "python --version && node --version && bun --version && go version && rustc --version && opencode --version"
 ```
 
 Notes
