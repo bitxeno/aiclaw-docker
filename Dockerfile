@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     unzip \
     zip \
-    jq
+    jq \
+    tmux
 
 # Install s6-overlay for process supervision
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
@@ -91,17 +92,9 @@ RUN npm install -g @openai/codex && \
 #     npm install -g mcporter && \
 #     npm install -g bb-browser
 
-# Install moltis
-RUN ARCH=$(uname -m); \
-    rm -rf /root/.local/moltis/share && \
-    rm -rf /root/.local/moltis/bin && \
-    mkdir -p /root/.local/moltis/bin && \
-    wget https://github.com/moltis-org/moltis/releases/download/20260426.05/moltis-20260426.05-${ARCH}-unknown-linux-gnu.tar.gz && \
-        tar -xzf moltis-20260426.05-${ARCH}-unknown-linux-gnu.tar.gz && \
-        chmod +x moltis && \
-        mv moltis /root/.local/moltis/bin/ && \
-        mv share /root/.local/moltis/ && \
-        npm install -g bb-browser
+# Install zeroclaw
+RUN curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/master/install.sh | bash
+RUN npm install -g bb-browser
 ENV PATH="${PATH}:/root/.local/moltis/bin"
 
 # Install GitHub CLI

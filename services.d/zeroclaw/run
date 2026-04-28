@@ -1,0 +1,7 @@
+#!/command/with-contenv bash
+
+set -e
+
+echo "Starting zeroclaw..."
+
+zeroclaw gateway
