@@ -93,8 +93,15 @@ RUN npm install -g @openai/codex && \
 #     npm install -g bb-browser
 
 # Install zeroclaw
-RUN curl -fsSL https://raw.githubusercontent.com/zeroclaw-labs/zeroclaw/master/install.sh | bash
-RUN npm install -g bb-browser
+RUN ARCH=$(uname -m); \
+    mkdir -p /root/.local/zeroclaw/bin && \
+    wget https://github.com/zeroclaw-labs/zeroclaw/releases/download/v0.7.3/zeroclaw-${ARCH}-unknown-linux-gnu.tar.gz && \
+        tar -xzf zeroclaw-${ARCH}-unknown-linux-gnu.tar.gz && \
+        chmod +x zeroclaw && \
+        mv zeroclaw /root/.local/zeroclaw/bin/ && \
+        mv web /root/.local/zeroclaw/bin/ && \
+        npm install -g bb-browser
+ENV PATH="${PATH}:/root/.local/zeroclaw/bin"
 
 # Install GitHub CLI
 RUN if [ "$(uname -m)" = "x86_64" ]; then \

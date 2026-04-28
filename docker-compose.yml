@@ -1,7 +1,7 @@
 services:
-  openclaw:
-    image: ghcr.io/bitxeno/openclaw-docker:latest
-    container_name: openclaw
+  aiclaw:
+    image: ghcr.io/bitxeno/aiclaw-docker:latest
+    container_name: aiclaw
     ports:
       - "${OPENCLAW_GATEWAY_PORT}:18789"
       - "${OPENCLAW_BRIDGE_PORT}:18790"
@@ -16,8 +16,8 @@ services:
       - ./.opencode/data:/root/.local/share/opencode
     restart: unless-stopped
     networks:
-      - openclaw-network
+      - aiclaw-network
 
 networks:
-  openclaw-network:
+  aiclaw-network:
     driver: bridge
